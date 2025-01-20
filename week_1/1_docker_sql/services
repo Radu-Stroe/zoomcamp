@@ -27,7 +27,7 @@ docker run -it \
   -v "./ny_taxi_volume:/var/lib/postgresql/data" \
   -p 5432:5432 \
   --network=pg_network \
-  --name pgdatabase3 \
+  --name pgdatabase1 \
   postgres:13
 
 # Run pgAdmin 
@@ -37,7 +37,7 @@ docker run -it \
   -e PGADMIN_DEFAULT_PASSWORD="root" \
   -p 8080:80 \
   --network=pg_network \
-  --name pgadmin-5 \
+  --name pgadmin-1 \
   dpage/pgadmin4
 
 # Data ingestion 
@@ -62,7 +62,7 @@ docker run -it \
   taxi_ingest:v001 \
     --user=root \
     --password=root \
-    --host=pgdatabase3 \
+    --host=pgdatabase4 \
     --port=5432 \
     --db=ny_taxi \
     --table_name=yellow_taxi \
@@ -92,3 +92,19 @@ services:
       PGADMIN_DEFAULT_PASSWORD: root
     ports:
       - "8080:80"
+
+
+# Ingest taxi_zone_lookup.csv
+
+URL="https://github.com/DataTalksClub/nyc-tlc-data/releases/download/misc/taxi_zone_lookup.csv"
+
+docker run -it \
+  --network=pg_network \
+  taxi_ingest:v002 \
+    --user=root \
+    --password=root \
+    --host=pgdatabase4 \
+    --port=5432 \
+    --db=ny_taxi \
+    --table_name=zones \
+    --url=${URL}
