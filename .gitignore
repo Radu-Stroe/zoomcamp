@@ -3,7 +3,7 @@ week_1/docker_sql/ny_taxi_volume/
 week_1/docker_sql/output.csv.gz
 week_1/docker_sql/yellow_tripdata_2021-01.csv
 
-week_2/*.json
+week_2/**/*.json
 
 
 
