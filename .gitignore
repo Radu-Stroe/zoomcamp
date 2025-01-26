@@ -3,6 +3,11 @@ week_1/docker_sql/ny_taxi_volume/
 week_1/docker_sql/output.csv.gz
 week_1/docker_sql/yellow_tripdata_2021-01.csv
 
+week_1/homework_1/anaconda_projects/
+week_1/homework_1/ny_taxi_volume/
+week_1/homework_1/green_tripdata_2019-10.csv
+week_1/homework_1/taxi_zone_lookup.csv
+
 week_2/**/*.json
 
 
@@ -21,6 +26,7 @@ crash.*.log
 # Exclude all .tfvars files, which are likely to contain sensitive data, such as
 # password, private keys, and other secrets. These should not be part of version 
 # control as they are data points which are potentially sensitive and subject 
+
 # to change depending on the environment.
 *.tfvars
 *.tfvars.json
