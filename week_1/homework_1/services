@@ -1,0 +1,62 @@
+  # NETWORK 
+
+docker network create pg_network
+
+# Run Postgres
+
+docker run -it \
+  -e POSTGRES_USER="root" \
+  -e POSTGRES_PASSWORD="root" \
+  -e POSTGRES_DB="ny_taxi" \
+  -v "./ny_taxi_volume:/var/lib/postgresql/data" \
+  -p 5432:5432 \
+  --network=pg_network \
+  --name pgdatabase1 \
+  postgres:13
+
+# Run pgAdmin 
+
+docker run -it \
+  -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" \
+  -e PGADMIN_DEFAULT_PASSWORD="root" \
+  -p 8080:80 \
+  --network=pg_network \
+  --name pgadmin-1 \
+  dpage/pgadmin4
+
+
+# Build docker image
+docker build -t taxi_ingest:v001 .
+
+# Run docker image 
+
+URL="https://github.com/DataTalksClub/nyc-tlc-data/releases/download/green/green_tripdata_2019-10.csv.gz"
+
+docker run -it \
+  --network=pg_network \
+  taxi_ingest:v001 \
+    --user=root \
+    --password=root \
+    --host=pgdatabase1 \
+    --port=5432 \
+    --db=ny_taxi \
+    --table_name=green_taxi \
+    --url=${URL}
+
+# Build docker image
+docker build -t taxi_ingest:v002 .
+
+# Ingest taxi_zone_lookup.csv
+
+URL="https://github.com/DataTalksClub/nyc-tlc-data/releases/download/misc/taxi_zone_lookup.csv"
+
+docker run -it \
+  --network=pg_network \
+  taxi_ingest:v002 \
+    --user=root \
+    --password=root \
+    --host=pgdatabase1 \
+    --port=5432 \
+    --db=ny_taxi \
+    --table_name=zones \
+    --url=${URL}

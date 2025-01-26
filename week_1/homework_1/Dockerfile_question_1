@@ -1,0 +1,4 @@
+FROM python:3.12.8
+RUN pip --version
+ENTRYPOINT ["sh", "-c", "pip --version && exec bash"]
+# ENTRYPOINT ["bash"]
