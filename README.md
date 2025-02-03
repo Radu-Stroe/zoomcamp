@@ -87,3 +87,13 @@ ORDER BY
 LIMIT 1;
 
 7. terraform init, terraform apply -auto-approve, terraform destroy
+
+
+Homework 2: Kestra
+
+1. 128.3 MB
+2. green_tripdata_2020-04.csv
+3. 24,648,499
+4. 1,734,051
+5. 1,925,152
+6. Add a timezone property set to America/New_York in the Schedule trigger configuration
