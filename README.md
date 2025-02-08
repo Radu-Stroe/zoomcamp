@@ -100,18 +100,18 @@ Homework 2: Kestra
 
 Homework 3: Data-warehouse 
 
-# create dataset
+## create dataset
 CREATE SCHEMA `data-warehouse-homework-450219.de_bq_radu`
 OPTIONS(location = 'europe-central2');
 
-# create external table
+## create external table
 CREATE OR REPLACE EXTERNAL TABLE `de_bq_radu.external_yellow_tripdata`
 OPTIONS (
   format = 'parquet',
   uris = ['gs://radu-de-bucket/yellow_tripdata_2024-0*.parquet']
 );
 
-# create a non partitioned table from external table
+## create a non partitioned table from external table
 CREATE OR REPLACE TABLE `de_bq_radu.yellow_tripdata` AS
 SELECT * FROM `de_bq_radu.external_yellow_tripdata`;
 
