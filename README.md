@@ -97,3 +97,69 @@ Homework 2: Kestra
 4. 1,734,051
 5. 1,925,152
 6. Add a timezone property set to America/New_York in the Schedule trigger configuration
+
+Homework 3: Data-warehouse 
+
+# create dataset
+CREATE SCHEMA `data-warehouse-homework-450219.de_bq_radu`
+OPTIONS(location = 'europe-central2');
+
+# create external table
+CREATE OR REPLACE EXTERNAL TABLE `de_bq_radu.external_yellow_tripdata`
+OPTIONS (
+  format = 'parquet',
+  uris = ['gs://radu-de-bucket/yellow_tripdata_2024-0*.parquet']
+);
+
+# create a non partitioned table from external table
+CREATE OR REPLACE TABLE `de_bq_radu.yellow_tripdata` AS
+SELECT * FROM `de_bq_radu.external_yellow_tripdata`;
+
+1. 20,332,093
+
+SELECT COUNT(*) 
+FROM `de_bq_radu.yellow_tripdata`;
+
+2. 0 MB for the External Table and 155.12 MB for the Materialized Table
+
+SELECT DISTINCT PULocationID
+FROM `de_bq_radu.external_yellow_tripdata`;
+
+SELECT DISTINCT PULocationID
+FROM `de_bq_radu.yellow_tripdata`;
+
+3. BigQuery is a columnar database, and it only scans the specific columns requested in the query. Querying two columns (PULocationID, DOLocationID) requires reading more data than querying one column (PULocationID), leading to a higher estimated number of bytes processed.
+
+SELECT PULocationID
+FROM `de_bq_radu.yellow_tripdata`;
+
+SELECT PULocationID, DOLocationID
+FROM `de_bq_radu.yellow_tripdata`;
+
+4. 8,333
+
+SELECT COUNT(fare_amount)
+FROM `de_bq_radu.yellow_tripdata`
+WHERE fare_amount = 0;
+
+5. Partition by tpep_dropoff_datetime and Cluster on VendorID
+
+CREATE OR REPLACE TABLE `de_bq_radu.yellow_tripdata_partitoned_clustered`
+PARTITION BY DATE(tpep_dropoff_datetime)
+CLUSTER BY VendorID AS
+SELECT * FROM `de_bq_radu.external_yellow_tripdata`;
+
+6. 310.24 MB for non-partitioned table and 26.84 MB for the partitioned table
+
+SELECT DISTINCT VendorID 
+FROM `de_bq_radu.yellow_tripdata` 
+WHERE tpep_dropoff_datetime BETWEEN '2024-03-01' AND '2024-03-15';
+
+SELECT DISTINCT VendorID 
+FROM `de_bq_radu.yellow_tripdata_partitioned_clustered` 
+WHERE tpep_dropoff_datetime BETWEEN '2024-03-01' AND '2024-03-15';
+
+7. GCP Bucket
+
+8. False
+
