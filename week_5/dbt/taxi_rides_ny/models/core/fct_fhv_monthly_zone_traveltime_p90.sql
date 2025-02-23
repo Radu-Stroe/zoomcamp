@@ -16,13 +16,14 @@ with trips as (
 
 p90_trip_duration as (
     select
-        trip_year,
+        distinct trip_year,
         trip_month,
         pickup_location_id,
         dropoff_location_id,
-        APPROX_QUANTILES(trip_duration, 100)[OFFSET(90)] as p90_trip_duration  
+        PERCENTILE_CONT(trip_duration, 0.9) OVER (
+            PARTITION BY trip_year, trip_month, pickup_location_id, dropoff_location_id
+        ) as p90_trip_duration  
     from trips
-    group by trip_year, trip_month, pickup_location_id, dropoff_location_id
 ),
 
 dim_zones as (
@@ -42,8 +43,8 @@ select
     pickup_zone.borough as pickup_borough, 
     dropoff_zone.zone as dropoff_zone,
     dropoff_zone.borough as dropoff_borough
-    from p90_trip_duration
-    inner join dim_zones as pickup_zone
+from p90_trip_duration
+inner join dim_zones as pickup_zone
     on p90_trip_duration.pickup_location_id = pickup_zone.locationid
-    inner join dim_zones as dropoff_zone
+inner join dim_zones as dropoff_zone
     on p90_trip_duration.dropoff_location_id = dropoff_zone.locationid
