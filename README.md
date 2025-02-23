@@ -256,3 +256,20 @@ WHERE year = 2020
   AND service_type IN ('Green', 'Yellow');
 
 7. LaGuardia Airport, Chinatown, Garment District
+
+WITH ranked_trips AS (
+    SELECT 
+        pickup_zone, 
+        dropoff_zone, 
+        p90_trip_duration, 
+        trip_month,
+        RANK() OVER (PARTITION BY pickup_zone ORDER BY p90_trip_duration DESC) as rnk
+    FROM `dbt-sandbox-450506.dbt_rstroe.fct_fhv_monthly_zone_traveltime_p90` 
+    WHERE trip_month = 11
+    AND pickup_zone IN ('Newark Airport', 'SoHo', 'Yorkville East')
+)
+
+SELECT pickup_zone, dropoff_zone, p90_trip_duration, trip_month
+FROM ranked_trips
+WHERE rnk = 2
+ORDER BY pickup_zone, p90_trip_duration DESC;
