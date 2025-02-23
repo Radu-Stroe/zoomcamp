@@ -18,15 +18,13 @@ with filtered_trips as (
 ), percentiles as (
     -- Calculate continuous percentiles (97, 95, 90) for fare_amount by service_type, year, and month
     select 
-        service_type,
+        distinct service_type,
         year,
         month,
-        -- Using APPROX_QUANTILES to calculate percentiles
-        APPROX_QUANTILES(fare_amount, 100)[OFFSET(97)] as p97,
-        APPROX_QUANTILES(fare_amount, 100)[OFFSET(95)] as p95,
-        APPROX_QUANTILES(fare_amount, 100)[OFFSET(90)] as p90
+        PERCENTILE_CONT(fare_amount, 0.97) OVER (PARTITION BY service_type, year, month) AS p97,
+        PERCENTILE_CONT(fare_amount, 0.95) OVER (PARTITION BY service_type, year, month) AS p95,
+        PERCENTILE_CONT(fare_amount, 0.90) OVER (PARTITION BY service_type, year, month) AS p90
     from filtered_trips
-    group by service_type, year, month
 )
 select 
     service_type,
