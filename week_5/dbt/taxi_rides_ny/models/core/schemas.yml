@@ -127,3 +127,80 @@ models:
       - name: payment_type_description
         data_type: string
         description: ""
+
+      - name: year
+        data_type: int64
+        description: "Year extracted from pickup_datetime"
+
+      - name: quarter
+        data_type: int64
+        description: "Quarter (1-4) extracted from pickup_datetime"
+
+      - name: year_quarter
+        data_type: string
+        description: "Year and quarter in format YYYY/QN (e.g., 2020/Q1, 2021/Q3)"
+
+      - name: month
+        data_type: int64
+        description: "Month (1-12) extracted from pickup_datetime"
+
+  - name: fct_taxi_trips_quarterly_revenue
+    description: >
+      Quarterly revenue summary per service type, year, and quarter.
+      Also includes Year-over-Year (YoY) revenue growth compared to the same quarter in the previous year.
+    columns:
+      - name: service_type
+        data_type: string
+        description: "Taxi service type (Green or Yellow)."
+
+      - name: year
+        data_type: int64
+        description: "Year of the trip."
+
+      - name: quarter
+        data_type: int64
+        description: "Quarter of the trip (1-4)."
+
+      - name: quarterly_total_amount
+        data_type: numeric
+        description: "Total revenue (sum of total_amount) for the given year and quarter."
+
+      - name: prev_year_quarterly_total_amount
+        data_type: numeric
+        description: "Total revenue for the same quarter in the previous year."
+
+      - name: quarterly_revenue_yoy_growth
+        data_type: numeric
+        description: "Year-over-Year (YoY) percentage revenue growth for the same quarter compared to the previous year."
+        tests:
+          - not_null:
+              severity: warn
+
+  - name: fct_taxi_trips_monthly_fare_p95
+    description: >
+      This table contains the 97th, 95th, and 90th percentiles of fare_amount for each service type (Green and Yellow) 
+      in each month, after filtering out invalid entries.
+    columns:
+      - name: service_type
+        data_type: string
+        description: "The type of taxi service (Green or Yellow)"
+        
+      - name: year
+        data_type: int64
+        description: "The year of the trip"
+        
+      - name: month
+        data_type: int64
+        description: "The month of the trip (1 to 12)"
+        
+      - name: p97
+        data_type: numeric
+        description: "The 97th percentile of fare_amount for the month"
+        
+      - name: p95
+        data_type: numeric
+        description: "The 95th percentile of fare_amount for the month"
+        
+      - name: p90
+        data_type: numeric
+        description: "The 90th percentile of fare_amount for the month"
