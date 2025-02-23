@@ -225,3 +225,34 @@ with pipeline.sql_client() as client:
     # Prints column values of the first row
     print(res)
 
+Homework 4: Analytics Engineering
+
+1. SELECT * FROM myproject.raw_nyc_tripdata.ext_green_taxi
+
+2. pickup_datetime >= CURRENT_DATE - INTERVAL '{{ var("days_back", env_var("DAYS_BACK", "30")) }}' DAY
+
+3. dbt run --select models/staging/+
+
+4. 
+Setting a value for DBT_BIGQUERY_TARGET_DATASET env var is mandatory, or it'll fail to compile
+When using core, it materializes in the dataset defined in DBT_BIGQUERY_TARGET_DATASET
+When using stg, it materializes in the dataset defined in DBT_BIGQUERY_STAGING_DATASET, or defaults to DBT_BIGQUERY_TARGET_DATASET
+When using staging, it materializes in the dataset defined in DBT_BIGQUERY_STAGING_DATASET, or defaults to DBT_BIGQUERY_TARGET_DATASET
+
+5. green: {best: 2020/Q1, worst: 2020/Q2}, yellow: {best: 2020/Q1, worst: 2020/Q2}
+
+6. green: {p97: 55.0, p95: 45.0, p90: 26.5}, yellow: {p97: 31.5, p95: 25.5, p90: 19.0}
+
+SELECT 
+    service_type,
+    year,
+    month,
+    p97,
+    p95,
+    p90
+FROM `dbt-sandbox-450506.dbt_rstroe.fct_taxi_trips_monthly_fare_p95`
+WHERE year = 2020
+  AND month = 4
+  AND service_type IN ('Green', 'Yellow');
+
+7. LaGuardia Airport, Chinatown, Garment District
