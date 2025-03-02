@@ -10,6 +10,9 @@ week_1/homework_1/taxi_zone_lookup.csv
 
 week_1/**/*.json
 
+week_5/*.csv
+week_5/*.csv.gz
+week_5/*.parquet
 
 
 # Local .terraform directories
