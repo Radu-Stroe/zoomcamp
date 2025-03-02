@@ -273,3 +273,51 @@ SELECT pickup_zone, dropoff_zone, p90_trip_duration, trip_month
 FROM ranked_trips
 WHERE rnk = 2
 ORDER BY pickup_zone, p90_trip_duration DESC;
+
+Homework 5: Batch
+
+1. 3.5.4
+
+spark.version
+
+2. 25 MB
+
+ls -lh data/homework/yellow/*.parquet
+
+3. 125,567
+
+spark.sql("""
+SELECT 
+    COUNT(*) AS count_trips
+FROM
+    yellow
+WHERE 
+    DATE(tpep_pickup_datetime) = '2024-10-15'
+""").show()
+
+4. 162
+
+spark.sql("""
+SELECT 
+    MAX(TIMESTAMPDIFF(SECOND, tpep_pickup_datetime, tpep_dropoff_datetime)) / 3600 AS longest_trip_hours
+FROM 
+    yellow
+""").show()
+
+5. 4040
+
+http://localhost:4040/jobs/
+
+6. Governor's Island/Ellis Island/Liberty Island
+
+spark.sql("""
+SELECT 
+    tzl.Zone AS least_frequent_pickup_zone,
+    COUNT(y.PULocationID) AS pickup_count
+FROM yellow y
+JOIN taxi_zone_lookup tzl
+    ON y.PULocationID = tzl.LocationID
+GROUP BY tzl.Zone
+ORDER BY pickup_count ASC
+LIMIT 1
+""").show()
