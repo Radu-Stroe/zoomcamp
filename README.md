@@ -321,3 +321,22 @@ GROUP BY tzl.Zone
 ORDER BY pickup_count ASC
 LIMIT 1
 """).show()
+
+Homework 6: Streaming
+
+1. v24.2.18
+
+rpk version
+
+2. TOPIC        STATUS
+green-trips  OK
+
+rpk topic create green-trips
+
+3. True
+
+python3 connect_kafka.py
+
+4. 31.84 seconds
+
+5. -
